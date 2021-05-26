@@ -114,7 +114,7 @@ otu.percent.presentAll <- 100 * sum(otu.med[,presentAll])/nrow(otu.med)
 tick$simpson <- diversity(otu_rare, index="invsimpson")
 
 # Mixed effects models
-m1.nlme = lme(simpson ~ masl*tick_stage*month+(I(month^2)), random= ~1|site,  data=tick)
+m1.nlme = lme(simpson ~ masl*tick_stage*month+(I(masl^2)), random= ~1|site,  data=tick)
 m1.nlme = lme(simpson ~ masl*tick_stage*month, random= ~1|site,  data=tick)
 m1.nlme = lme(simpson ~ masl+tick_stage+month+masl:tick_stage+masl:month+tick_stage:month, random= ~1|site, data=tick)
 m1.nlme = lme(simpson ~ masl+masl:month+tick_stage*month, random= ~1|site, data=tick)
@@ -122,18 +122,20 @@ m1.nlme = lme(simpson ~ masl+masl:month+tick_stage+tick_stage:month, random= ~1|
 m1.nlme = lme(simpson ~ masl+tick_stage+tick_stage:month, random= ~1|site, data=tick)
 m1.nlme = lme(simpson ~ masl+tick_stage, random= ~1|site, data=tick)
 m1.nlme = lme(simpson ~ tick_stage, random= ~1|site, data=tick)
+m1.nlme = lme(simpson ~ 1, random= ~1|site, data=tick)
 
 
 summary(m1.nlme)
 r.squaredGLMM(m1.nlme)
 
-m2.nlme = lme(phylodiv ~ masl*tick_stage*month+(I(month^2)), random= ~1|site,  data=tick)
+m2.nlme = lme(phylodiv ~ masl*tick_stage*month+(I(masl^2)), random= ~1|site,  data=tick)
 m2.nlme = lme(phylodiv ~ masl*tick_stage*month, random= ~1|site,  data=tick)
 m2.nlme = lme(phylodiv ~ masl+tick_stage+month+masl:tick_stage+masl:month+tick_stage:month, random= ~1|site, data=tick)
 m2.nlme = lme(phylodiv ~ masl+masl:month+tick_stage*month, random= ~1|site, data=tick)
 m2.nlme = lme(phylodiv ~ masl+month+tick_stage+tick_stage:month, random= ~1|site,  data=tick)
 m2.nlme = lme(phylodiv ~ masl+tick_stage+ month , random= ~1|site,  data=tick)
 m2.nlme = lme(phylodiv ~ masl+month, random= ~1|site,  data=tick)
+m2.nlme = lme(phylodiv ~ 1, random= ~1|site, data=tick)
 
 summary(m2.nlme)
 r.squaredGLMM(m2.nlme)
@@ -398,7 +400,7 @@ names(alpha_phy) <- c('elevation', 'masl','stage','site','month','mpd', 'mntd','
 
 summary(lm(nti_nri~elevation+stage+month, data=alpha_phy))
 
-m3.nlme = lme(mpd ~ masl*stage*month+(I(month^2)), random= ~1|site,  data=alpha_phy)
+m3.nlme = lme(mpd ~ masl*stage*month+(I(masl^2)), random= ~1|site,  data=alpha_phy)
 m3.nlme = lme(mpd ~ masl+month+stage+masl:month+stage:month+ masl:stage+(I(month^2)), random= ~1|site, data=alpha_phy)
 m3.nlme = lme(mpd ~ masl+month+stage+masl:month+ masl:stage+(I(month^2)), random= ~1|site, data=alpha_phy)
 m3.nlme = lme(mpd ~ masl+month+stage+masl:stage+(I(month^2)), random= ~1|site, data=alpha_phy)
@@ -406,10 +408,12 @@ m3.nlme = lme(mpd ~ masl+stage+month+(I(month^2)), random= ~1|site, data=alpha_p
 m3.nlme = lme(mpd ~ stage+month+(I(month^2)), random= ~1|site,  data=alpha_phy)
 m3.nlme = lme(mpd ~ stage+month, random= ~1|site,  data=alpha_phy)
 m3.nlme = lme(mpd ~ stage, random= ~1|site,  data=alpha_phy)
+m3.nlme = lme(mpd ~ 1, random= ~1|site,  data=alpha_phy)
+
 summary(m3.nlme)
 r.squaredGLMM(m3.nlme)
 
-m4.nlme = lme(mntd ~ masl*stage*month+(I(month^2)), random= ~1|site,  data=alpha_phy)
+m4.nlme = lme(mntd ~ masl*stage*month+(I(masl^2)), random= ~1|site,  data=alpha_phy)
 m4.nlme = lme(mntd ~ masl*stage*month, random= ~1|site,  data=alpha_phy)
 m4.nlme = lme(mntd ~ masl+month+stage+masl:month+stage:month+ masl:stage, random= ~1|site, data=alpha_phy)
 m4.nlme = lme(mntd ~ masl+month+stage+masl:month+masl:stage, random= ~1|site, data=alpha_phy)
@@ -417,6 +421,8 @@ m4.nlme = lme(mntd ~ masl+month+stage+masl:stage, random= ~1|site, data=alpha_ph
 m4.nlme = lme(mntd ~ masl+stage+month, random= ~1|site,  data=alpha_phy)
 m4.nlme = lme(mntd ~ stage+month, random= ~1|site,  data=alpha_phy)
 m4.nlme = lme(mntd ~ stage, random= ~1|site,  data=alpha_phy)
+m4.nlme = lme(mntd ~ 1, random= ~1|site,  data=alpha_phy)
+
 summary(m4.nlme)
 r.squaredGLMM(m4.nlme)
 
@@ -519,6 +525,7 @@ quantile(RCbray2, c(0.025, 0.50, 0.975), na.rm=TRUE)
 quantile(sesbetaNTI, c(0.25, 0.50, 0.75), na.rm=TRUE) 
 quantile(RCbray2, c(0.25, 0.50, 0.75), na.rm=TRUE) 
 
+## All samples
 ## classification: 
 # Variable selection      betaNTI > 2
 
@@ -549,241 +556,339 @@ class_UDtemp <- ((sesbetaNTI<2 & sesbetaNTI>(-2)) + ((RCbray2<0.95)&(RCbray2>(-0
 class_UD <- (class_UDtemp==2)
 sum(class_UD, na.rm=TRUE)/2 #2425
 
-# On ELEVATIION
-## select H, M and L groups
 
-low <- tick$elev=="low"
-middle <- tick$elev=="middle"
-high <- tick$elev=="high"
 
-sesbetaNTI_H <- sesbetaNTI[high,high]
-sesbetaNTI_M <- sesbetaNTI[middle,middle]
-sesbetaNTI_L <- sesbetaNTI[low,low]
 
-RCbray2_H <- RCbray2[high,high]
-RCbray2_M <- RCbray2[middle,middle]
-RCbray2_L <- RCbray2[low,low]
+#SITES
+#Select sites
 
-quantile(sesbetaNTI_H, c(0.025, 0.50, 0.975), na.rm=TRUE) 
-quantile(RCbray2_H, c(0.025, 0.50, 0.975), na.rm=TRUE) 
 
-quantile(sesbetaNTI_M, c(0.025, 0.50, 0.975), na.rm=TRUE) 
-quantile(RCbray2_M, c(0.025, 0.50, 0.975), na.rm=TRUE) 
+FEL <- tick$elev=="low"&tick$site=="FE"
+FEM <- tick$elev=="middle"&tick$site=="FE"
+FLL <- tick$elev=="low"&tick$site=="FL"
+FLM <- tick$elev=="middle"&tick$site=="FL"
+PAL <- tick$elev=="low"&tick$site=="PA"
+PAM <- tick$elev=="middle"&tick$site=="PA"
 
-quantile(sesbetaNTI_L, c(0.025, 0.50, 0.975), na.rm=TRUE) 
-quantile(RCbray2_L, c(0.025, 0.50, 0.975), na.rm=TRUE) 
+sesbetaNTI_FEL <- sesbetaNTI[FEL,FEL]
+sesbetaNTI_FEM <- sesbetaNTI[FEM,FEM]
+sesbetaNTI_FLL <- sesbetaNTI[FLL,FLL]
+sesbetaNTI_FLM <- sesbetaNTI[FLM,FLM]
+sesbetaNTI_PAL <- sesbetaNTI[PAL,PAL]
+sesbetaNTI_PAM <- sesbetaNTI[PAM,PAM]
 
-quantile(sesbetaNTI_H, c(0.25, 0.50, 0.75), na.rm=TRUE) 
-quantile(RCbray2_H, c(0.25, 0.50, 0.75), na.rm=TRUE) 
+RCbray2_FEL <- RCbray2[FEL,FEL]
+RCbray2_FEM <- RCbray2[FEM,FEM]
+RCbray2_FLL <- RCbray2[FLL,FLL]
+RCbray2_FLM <- RCbray2[FLM,FLM]
+RCbray2_PAL <- RCbray2[PAL,PAL]
+RCbray2_PAM <- RCbray2[PAM,PAM]
 
-quantile(sesbetaNTI_M, c(0.25, 0.50, 0.75), na.rm=TRUE) 
-quantile(RCbray2_M, c(0.25, 0.50, 0.75), na.rm=TRUE) 
 
-quantile(sesbetaNTI_L, c(0.25, 0.50, 0.75), na.rm=TRUE) 
-quantile(RCbray2_L, c(0.25, 0.50, 0.75), na.rm=TRUE) 
+
+quantile(sesbetaNTI_FEL, c(0.025, 0.50, 0.975), na.rm=TRUE) 
+quantile(RCbray2_FEL, c(0.025, 0.50, 0.975), na.rm=TRUE) 
+
+quantile(sesbetaNTI_FEM, c(0.025, 0.50, 0.975), na.rm=TRUE) 
+quantile(RCbray2_FEM, c(0.025, 0.50, 0.975), na.rm=TRUE) 
+
+quantile(sesbetaNTI_FLL, c(0.025, 0.50, 0.975), na.rm=TRUE) 
+quantile(RCbray2_FLL, c(0.025, 0.50, 0.975), na.rm=TRUE) 
+
+quantile(sesbetaNTI_FLM, c(0.25, 0.50, 0.75), na.rm=TRUE) 
+quantile(RCbray2_FLM, c(0.25, 0.50, 0.75), na.rm=TRUE) 
+
+quantile(sesbetaNTI_PAL, c(0.25, 0.50, 0.75), na.rm=TRUE) 
+quantile(RCbray2_PAL, c(0.25, 0.50, 0.75), na.rm=TRUE) 
+
+quantile(sesbetaNTI_PAM, c(0.25, 0.50, 0.75), na.rm=TRUE) 
+quantile(RCbray2_PAM, c(0.25, 0.50, 0.75), na.rm=TRUE) 
 
 
 ## classification: 
 # Variable selection      betaNTI > 2
 
-class_VSH <- sesbetaNTI_H>=2
-sum(class_VSH, na.rm=TRUE)/2 #0
+class_VSFEL <- sesbetaNTI_FEL>=2
+sum(class_VSFEL, na.rm=TRUE)/2 #6
 
-class_VSM <- sesbetaNTI_M>=2
-sum(class_VSM, na.rm=TRUE)/2 #11
+class_VSFEM <- sesbetaNTI_FEM>=2
+sum(class_VSFEM, na.rm=TRUE)/2 #5
 
-class_VSL <- sesbetaNTI_L>=2
-sum(class_VSL, na.rm=TRUE)/2 #15
+class_VSFLL <- sesbetaNTI_FLL>=2
+sum(class_VSFLL, na.rm=TRUE)/2 #8
+
+class_VSFLM <- sesbetaNTI_FLM>=2
+sum(class_VSFLM, na.rm=TRUE)/2 #0
+
+class_VSPAL <- sesbetaNTI_PAL>=2
+sum(class_VSPAL, na.rm=TRUE)/2 #0
+
+class_VSPAM <- sesbetaNTI_PAM>=2
+sum(class_VSPAM, na.rm=TRUE)/2 #0
 
 # Homogenous selection:   betaNTI < -2
 
-class_HSH <- -2>=sesbetaNTI_H
-sum(class_HSH, na.rm=TRUE)/2 #1
+class_HSFEL <- sesbetaNTI_FEL<=-2
+sum(class_HSFEL, na.rm=TRUE)/2 #6
 
-class_HSM <- -2>=sesbetaNTI_M
-sum(class_HSM, na.rm=TRUE)/2 #47
+class_HSFEM <- sesbetaNTI_FEM<=-2
+sum(class_HSFEM, na.rm=TRUE)/2 #5
 
-class_HSL <- -2>=sesbetaNTI_L
-sum(class_HSL, na.rm=TRUE)/2 #76
+class_HSFLL <- sesbetaNTI_FLL<=-2
+sum(class_HSFLL, na.rm=TRUE)/2 #11
+
+class_HSFLM <- sesbetaNTI_FLM<=-2
+sum(class_HSFLM, na.rm=TRUE)/2 #5
+
+class_HSPAL <- sesbetaNTI_PAL<=-2
+sum(class_HSPAL, na.rm=TRUE)/2 #6
+
+class_HSPAM <- sesbetaNTI_PAM<=-2
+sum(class_HSPAM, na.rm=TRUE)/2 #3
 
 # Dispersal limitation    betaNTI < 2, RCbray > 0.95
 
-class_DLtemp <- ((sesbetaNTI_H<2 & sesbetaNTI_H>(-2)) + (RCbray2_H>=0.95))
-class_DLH <- (class_DLtemp==2)
-sum(class_DLH, na.rm=TRUE)/2 #0
+class_DLtemp <- ((sesbetaNTI_FEL<2 & sesbetaNTI_FEL>(-2)) + (RCbray2_FEL>=0.95))
+class_DLFEL <- (class_DLtemp==2)
+sum(class_DLFEL, na.rm=TRUE)/2 #9
 
-class_DLtemp <- ((sesbetaNTI_M<2 & sesbetaNTI_M>(-2)) + (RCbray2_M>=0.95))
-class_DLM <- (class_DLtemp==2)
-sum(class_DLM, na.rm=TRUE)/2 #44
+class_DLtemp <- ((sesbetaNTI_FEM<2 & sesbetaNTI_FEM>(-2)) + (RCbray2_FEM>=0.95))
+class_DLFEM <- (class_DLtemp==2)
+sum(class_DLFEM, na.rm=TRUE)/2 #4
 
-class_DLtemp <- ((sesbetaNTI_L<2 & sesbetaNTI_L>(-2)) + (RCbray2_L>=0.95))
-class_DLL <- (class_DLtemp==2)
-sum(class_DLL, na.rm=TRUE)/2 #83
+class_DLtemp <- ((sesbetaNTI_FLL<2 & sesbetaNTI_FLL>(-2)) + (RCbray2_FLL>=0.95))
+class_DLFLL <- (class_DLtemp==2)
+sum(class_DLFLL, na.rm=TRUE)/2 #13
 
+class_DLtemp <- ((sesbetaNTI_FLM<2 & sesbetaNTI_FLM>(-2)) + (RCbray2_FLM>=0.95))
+class_DLFLM <- (class_DLtemp==2)
+sum(class_DLFLM, na.rm=TRUE)/2 #10
+
+class_DLtemp <- ((sesbetaNTI_PAL<2 & sesbetaNTI_PAL>(-2)) + (RCbray2_PAL>=0.95))
+class_DLPAL <- (class_DLtemp==2)
+sum(class_DLPAL, na.rm=TRUE)/2 #1
+
+class_DLtemp <- ((sesbetaNTI_PAM<2 & sesbetaNTI_PAM>(-2)) + (RCbray2_PAM>=0.95))
+class_DLPAM <- (class_DLtemp==2)
+sum(class_DLPAM, na.rm=TRUE)/2 #0
 
 # Homogenizing dispersal  betaNTI < 2, RCbray < -0.95
 
-class_HDtemp <- ((sesbetaNTI_H<2 & sesbetaNTI_H>(-2)) + (-0.95>=RCbray2_H))
-class_HDH <- (class_HDtemp==2)
-sum(class_HDH, na.rm=TRUE)/2 #0
+class_HDtemp <- ((sesbetaNTI_FEL<2 & sesbetaNTI_FEL>(-2)) + (-0.95>=RCbray2_FEL))
+class_HDFEL <- (class_HDtemp==2)
+sum(class_HDFEL, na.rm=TRUE)/2 #4
 
-class_HDtemp <- ((sesbetaNTI_M<2 & sesbetaNTI_M>(-2)) + (-0.95>=RCbray2_M))
-class_HDM <- (class_HDtemp==2)
-sum(class_HDM, na.rm=TRUE)/2 #4
+class_HDtemp <- ((sesbetaNTI_FEM<2 & sesbetaNTI_FEM>(-2)) + (-0.95>=RCbray2_FEM))
+class_HDFEM <- (class_HDtemp==2)
+sum(class_HDFEM, na.rm=TRUE)/2 #1
 
-class_HDtemp <- ((sesbetaNTI_L<2 & sesbetaNTI_L>(-2)) + (-0.95>=RCbray2_L))
-class_HDL <- (class_HDtemp==2)
-sum(class_HDL, na.rm=TRUE)/2 #20
+class_HDtemp <- ((sesbetaNTI_FLL<2 & sesbetaNTI_FLL>(-2)) + (-0.95>=RCbray2_FLL))
+class_HDFLL <- (class_HDtemp==2)
+sum(class_HDFLL, na.rm=TRUE)/2 #2
+
+class_HDtemp <- ((sesbetaNTI_FLM<2 & sesbetaNTI_FLM>(-2)) + (-0.95>=RCbray2_FLM))
+class_HDFLM <- (class_HDtemp==2)
+sum(class_HDFLM, na.rm=TRUE)/2 #0
+
+class_HDtemp <- ((sesbetaNTI_PAL<2 & sesbetaNTI_PAL>(-2)) + (-0.95>=RCbray2_PAL))
+class_HDPAL <- (class_HDtemp==2)
+sum(class_HDPAL, na.rm=TRUE)/2 #1
+
+class_HDtemp <- ((sesbetaNTI_PAM<2 & sesbetaNTI_PAM>(-2)) + (-0.95>=RCbray2_PAM))
+class_HDPAM <- (class_HDtemp==2)
+sum(class_HDPAM, na.rm=TRUE)/2 #0
 
 # Undominated             betaNTI < 2, RCbray < 0.95
 
-class_UDtemp <- ((sesbetaNTI_H<2 & sesbetaNTI_H>(-2)) + ((RCbray2_H<0.95)&(RCbray2_H>(-0.95))))
-class_UDH <- (class_UDtemp==2)
-sum(class_UDH, na.rm=TRUE)/2 #9
+class_UDtemp <- ((sesbetaNTI_FEL<2 & sesbetaNTI_FEL>(-2)) + ((RCbray2_FEL<0.95)&(RCbray2_FEL>(-0.95))))
+class_UDFEL <- (class_UDtemp==2)
+sum(class_UDFEL, na.rm=TRUE)/2 #72
 
-class_UDtemp <- ((sesbetaNTI_M<2 & sesbetaNTI_M>(-2)) + ((RCbray2_M<0.95)&(RCbray2_M>(-0.95))))
-class_UDM <- (class_UDtemp==2)
-sum(class_UDM, na.rm=TRUE)/2 #300
+class_UDtemp <- ((sesbetaNTI_FEM<2 & sesbetaNTI_FEM>(-2)) + ((RCbray2_FEM<0.95)&(RCbray2_FEM>(-0.95))))
+class_UDFEM <- (class_UDtemp==2)
+sum(class_UDFEM, na.rm=TRUE)/2 #53
 
-class_UDtemp <- ((sesbetaNTI_L<2 & sesbetaNTI_L>(-2)) + ((RCbray2_L<0.95)&(RCbray2_L>(-0.95))))
-class_UDL <- (class_UDtemp==2)
-sum(class_UDL, na.rm=TRUE)/2 #796
+class_UDtemp <- ((sesbetaNTI_FLL<2 & sesbetaNTI_FLL>(-2)) + ((RCbray2_FLL<0.95)&(RCbray2_FLL>(-0.95))))
+class_UDFLL <- (class_UDtemp==2)
+sum(class_UDFLL, na.rm=TRUE)/2 #176
 
-all <- c(sum(class_VS, na.rm=TRUE),sum(class_HS, na.rm=TRUE)/2, sum(class_DL, na.rm=TRUE)/2, 
+class_UDtemp <- ((sesbetaNTI_FLM<2 & sesbetaNTI_FLM>(-2)) + ((RCbray2_FLM<0.95)&(RCbray2_FLM>(-0.95))))
+class_UDFLM <- (class_UDtemp==2)
+sum(class_UDFLM, na.rm=TRUE)/2 #40
+
+class_UDtemp <- ((sesbetaNTI_PAL<2 & sesbetaNTI_PAL>(-2)) + ((RCbray2_PAL<0.95)&(RCbray2_PAL>(-0.95))))
+class_UDPAL <- (class_UDtemp==2)
+sum(class_UDPAL, na.rm=TRUE)/2 #37
+
+class_UDtemp <- ((sesbetaNTI_PAM<2 & sesbetaNTI_PAM>(-2)) + ((RCbray2_PAM<0.95)&(RCbray2_PAM>(-0.95))))
+class_UDPAM <- (class_UDtemp==2)
+sum(class_UDPAM, na.rm=TRUE)/2 #12
+
+
+
+##TICK STAGE by SITE
+
+
+FELF <- tick$elev=="low"&tick$site=="FE"&tick$tick_stage=="F"
+FELM <- tick$elev=="low"&tick$site=="FE"&tick$tick_stage=="M"
+
+FEMF <- tick$elev=="middle"&tick$site=="FE"&tick$tick_stage=="F"
+FEMM <- tick$elev=="middle"&tick$site=="FE"&tick$tick_stage=="M"
+FEMN <- tick$elev=="middle"&tick$site=="FE"&tick$tick_stage=="N"
+
+FLLF <- tick$elev=="low"&tick$site=="FL"&tick$tick_stage=="F"
+FLLM <- tick$elev=="low"&tick$site=="FL"&tick$tick_stage=="M"
+
+FLMF <- tick$elev=="middle"&tick$site=="FL"&tick$tick_stage=="F"
+FLMM <- tick$elev=="middle"&tick$site=="FL"&tick$tick_stage=="M"
+FLMN <- tick$elev=="middle"&tick$site=="FL"&tick$tick_stage=="N"
+
+PALF <- tick$elev=="low"&tick$site=="PA"&tick$tick_stage=="F"
+PALM <- tick$elev=="low"&tick$site=="PA"&tick$tick_stage=="M"
+
+PAMF <- tick$elev=="middle"&tick$site=="PA"&tick$tick_stage=="F"
+PAMM <- tick$elev=="middle"&tick$site=="PA"&tick$tick_stage=="M"
+
+
+sesbetaNTI_FELM <- sesbetaNTI[FELM,FELM]
+sesbetaNTI_FELF <- sesbetaNTI[FELF,FELF]
+
+sesbetaNTI_FEMM <- sesbetaNTI[FEMM,FEMM]
+sesbetaNTI_FEMF <- sesbetaNTI[FEMF,FEMF]
+sesbetaNTI_FEMN <- sesbetaNTI[FEMN,FEMN]
+
+sesbetaNTI_FLLM <- sesbetaNTI[FLLM,FLLM]
+sesbetaNTI_FLLF <- sesbetaNTI[FLLF,FLLF]
+
+sesbetaNTI_FLMM <- sesbetaNTI[FLMM,FLMM]
+sesbetaNTI_FLMF <- sesbetaNTI[FLMF,FLMF]
+sesbetaNTI_FLMN <- sesbetaNTI[FLMN,FLMN]
+
+sesbetaNTI_PALM <- sesbetaNTI[PALM,PALM]
+sesbetaNTI_PALF <- sesbetaNTI[PALF,PALF]
+
+sesbetaNTI_PAMM <- sesbetaNTI[PAMM,PAMM]
+sesbetaNTI_PAMF <- sesbetaNTI[PAMF,PAMF]
+
+RCbray2_FELM <- RCbray2[FELM,FELM]
+RCbray2_FELF <- RCbray2[FELF,FELF]
+
+RCbray2_FEMM <- RCbray2[FEMM,FEMM]
+RCbray2_FEMF <- RCbray2[FEMF,FEMF]
+RCbray2_FEMN <- RCbray2[FEMN,FEMN]
+
+RCbray2_FLLM <- RCbray2[FLLM,FLLM]
+RCbray2_FLLF <- RCbray2[FLLF,FLLF]
+
+RCbray2_FLMM <- RCbray2[FLMM,FLMM]
+RCbray2_FLMF <- RCbray2[FLMF,FLMF]
+RCbray2_FLMN <- RCbray2[FLMN,FLMN]
+
+RCbray2_PALM <- RCbray2[PALM,PALM]
+RCbray2_PALF <- RCbray2[PALF,PALF]
+
+RCbray2_PAMM <- RCbray2[PAMM,PAMM]
+RCbray2_PAMF <- RCbray2[PAMF,PAMF]
+
+WITHIN <- FELF+FELM+FEMM+FEMN+FLLF+FLLM+FLMF+FLMM+FLMN+PALF+PALM+PAMF+PAMM
+WITH=ifelse(WITHIN=="1",TRUE,FALSE)
+sesbetaNTI_WITH <- sesbetaNTI[WITH,WITH]
+RCbray2_WITH <- RCbray2[WITH,WITH]
+
+
+#For between-site comparisons
+
+class_VS_WITH <- sesbetaNTI_WITH>=2
+sum(class_VS_WITH, na.rm=TRUE)/2 #49
+
+class_HS_WITH <- -2>=sesbetaNTI_WITH
+sum(class_HS_WITH, na.rm=TRUE)/2 #193
+
+class_DLtemp <- ((sesbetaNTI_WITH<2 & sesbetaNTI_WITH>(-2)) + (RCbray2_WITH>=0.95))
+class_DL_WITH <- (class_DLtemp==2)
+sum(class_DL_WITH, na.rm=TRUE)/2 #206
+
+class_HDtemp <- ((sesbetaNTI_WITH<2 & sesbetaNTI_WITH>(-2)) + (-0.95>=RCbray2_WITH))
+class_HD_WITH <- (class_HDtemp==2)
+sum(class_HD_WITH, na.rm=TRUE)/2 #35
+
+class_UDtemp <- ((sesbetaNTI_WITH<2 & sesbetaNTI_WITH>(-2)) + ((RCbray2_WITH<0.95)&(RCbray2_WITH>(-0.95))))
+class_UD_WITH <- (class_UDtemp==2)
+sum(class_UD_WITH, na.rm=TRUE)/2 #1795
+
+## classification: 
+# Variable selection      betaNTI > 2
+
+class_VS_FELM <- sesbetaNTI_FELM>=2
+sum(class_VS_FELM, na.rm=TRUE)/2 #0 ... These were counted then manually - see males and females down below.
+
+
+## On to total numbers and Figure 5/Table S3
+
+#column All
+
+all <- c(sum(class_VS, na.rm=TRUE)/2,sum(class_HS, na.rm=TRUE)/2, sum(class_DL, na.rm=TRUE)/2, 
          sum(class_HD, na.rm=TRUE)/2,sum(class_UD, na.rm=TRUE)/2)
-elevL<- c(sum(class_VSL, na.rm=TRUE),sum(class_HSL, na.rm=TRUE)/2, sum(class_DLL, na.rm=TRUE)/2, 
-          sum(class_HDL, na.rm=TRUE)/2,sum(class_UDL, na.rm=TRUE)/2)
-elevM<- c(sum(class_VSM, na.rm=TRUE),sum(class_HSM, na.rm=TRUE)/2, sum(class_DLM, na.rm=TRUE)/2, 
-          sum(class_HDM, na.rm=TRUE)/2,sum(class_UDM, na.rm=TRUE)/2)
-elevH<- c(sum(class_VSH, na.rm=TRUE),sum(class_HSH, na.rm=TRUE)/2, sum(class_DLH, na.rm=TRUE)/2, 
-          sum(class_HDH, na.rm=TRUE)/2,sum(class_UDH, na.rm=TRUE)/2)
 
-elevation <- c(rep("all" , 5) , rep("low" , 5) , rep("middle" , 5) , rep("high" , 5) )
-proc <- rep(c("Variable selection","Homogenous selection","Dispersal limitation","Homogenizing dispersal","Undominated"),4)
-value <- c(all,elevL,elevM,elevH)
-data <- data.frame(elevation,proc,value)
 
-#Figure in Supplement
+#column Within-site
 
-ggplot(data, aes(fill=proc, y=value, x=elevation)) + 
+elevL<- c(sum(class_VSFEL, na.rm=TRUE)/2+sum(class_VSFLL, na.rm=TRUE)/2+sum(class_VSPAL, na.rm=TRUE)/2,
+          sum(class_HSFEL, na.rm=TRUE)/2+sum(class_HSFLL, na.rm=TRUE)/2+sum(class_HSPAL, na.rm=TRUE)/2,
+          sum(class_DLFEL, na.rm=TRUE)/2+sum(class_DLFLL, na.rm=TRUE)/2+sum(class_DLPAL, na.rm=TRUE)/2,
+          sum(class_HDFEL, na.rm=TRUE)/2+sum(class_HDFLL, na.rm=TRUE)/2+sum(class_HDPAL, na.rm=TRUE)/2,
+          sum(class_UDFEL, na.rm=TRUE)/2+sum(class_UDFLL, na.rm=TRUE)/2+sum(class_UDPAL, na.rm=TRUE)/2)
+elevM<- c(sum(class_VSFEM, na.rm=TRUE)/2+sum(class_VSFLM, na.rm=TRUE)/2+sum(class_VSPAM, na.rm=TRUE)/2,
+          sum(class_HSFEM, na.rm=TRUE)/2+sum(class_HSFLM, na.rm=TRUE)/2+sum(class_HSPAM, na.rm=TRUE)/2,
+          sum(class_DLFEM, na.rm=TRUE)/2+sum(class_DLFLM, na.rm=TRUE)/2+sum(class_DLPAM, na.rm=TRUE)/2,
+          sum(class_HDFEM, na.rm=TRUE)/2+sum(class_HDFLM, na.rm=TRUE)/2+sum(class_HDPAM, na.rm=TRUE)/2,
+          sum(class_UDFEM, na.rm=TRUE)/2+sum(class_UDFLM, na.rm=TRUE)/2+sum(class_UDPAM, na.rm=TRUE)/2)
+total<- elevL+elevM
+
+#Column Between-site
+
+betwsite <- c(sum(class_VS_WITH, na.rm=TRUE)/2-total[1],sum(class_HS_WITH, na.rm=TRUE)/2-total[2],
+              sum(class_DL_WITH, na.rm=TRUE)/2-total[3],sum(class_HD_WITH, na.rm=TRUE)/2-total[4],
+              sum(class_UD_WITH, na.rm=TRUE)/2-total[5])
+ 
+#Tick sex
+
+female <- c(2,13,4,3,178)
+male <- c(4,2,2,2,63)
+
+#Collating data
+
+group <- c(rep("All" , 5), rep("Between Sites" , 5) , rep("Total" , 5) , rep("Low" , 5), 
+           rep("Middle" , 5), rep("Female" , 5) , rep("Male" , 5))
+group <- factor(group, levels = c("All","Between Sites","Total","Low","Middle","Female","Male"))
+
+
+proc <- rep(c("Variable selection","Homogenous selection","Dispersal limitation","Homogenizing dispersal","Undominated"),7)
+proc <- factor(proc, levels = c("Variable selection","Homogenous selection","Dispersal limitation","Homogenizing dispersal","Undominated"))
+
+value <- c(all,betwsite,total,elevL,elevM,female,male)
+
+data <- data.frame(group,proc,value)
+
+
+#Chi-squared tests
+
+test <- as.table(cbind(c(value[6:10]),c(value[11:15])))
+dimnames(test)<- list(factor= c("Variable selection","Homogenous selection","Dispersal limitation","Homogenizing dispersal","Undominated"),
+                      level= c("All","Between Sites","Total","Low","Middle","Female","Male"))
+chisq.test(test)
+
+test <- as.table(cbind(c(value[16:20]),c(value[21:25])))
+dimnames(test)<- list(factor= c("Variable selection","Homogenous selection","Dispersal limitation","Homogenizing dispersal","Undominated"),
+                      level= c("All","Between Sites","Total","Low","Middle","Female","Male"))
+chisq.test(test)
+
+test <- as.table(cbind(c(value[26:30]),c(value[31:35])))
+dimnames(test)<- list(factor= c("Variable selection","Homogenous selection","Dispersal limitation","Homogenizing dispersal","Undominated"),
+                      level= c("All","Between Sites","Total","Low","Middle","Female","Male"))
+chisq.test(test)
+
+#Figure 5
+
+ggplot(data, aes(fill=proc, y=value, x=group)) + 
   geom_bar(position="fill", stat="identity")
-proc <- rep(c("Variable selection","Homogenous selection","Dispersal limitation","Homogenizing dispersal","Undominated"),4)
-
-# On TICK STAGE
-## select M, F and N groups
-
-M <- tick$tick_stage=="M"
-F <- tick$tick_stage=="F"
-N <- tick$tick_stage=="N"
-
-sesbetaNTI_M <- sesbetaNTI[M,M]
-sesbetaNTI_F <- sesbetaNTI[F,F]
-sesbetaNTI_N <- sesbetaNTI[N,N]
-
-RCbray2_M <- RCbray2[M,M]
-RCbray2_F <- RCbray2[F,F]
-RCbray2_N <- RCbray2[N,N]
-
-quantile(sesbetaNTI_M, c(0.025, 0.50, 0.975), na.rm=TRUE) 
-quantile(RCbray2_M, c(0.025, 0.50, 0.975), na.rm=TRUE) 
-
-quantile(sesbetaNTI_F, c(0.025, 0.50, 0.975), na.rm=TRUE) 
-quantile(RCbray2_F, c(0.025, 0.50, 0.975), na.rm=TRUE) 
-
-quantile(sesbetaNTI_N, c(0.025, 0.50, 0.75), na.rm=TRUE) 
-quantile(RCbray2_N, c(0.025, 0.50, 0.75), na.rm=TRUE) 
-
-quantile(sesbetaNTI_M, c(0.25, 0.50, 0.75), na.rm=TRUE) 
-quantile(RCbray2_M, c(0.25, 0.50, 0.75), na.rm=TRUE) 
-
-quantile(sesbetaNTI_F, c(0.25, 0.50, 0.75), na.rm=TRUE) 
-quantile(RCbray2_F, c(0.25, 0.50, 0.75), na.rm=TRUE) 
-
-quantile(sesbetaNTI_N, c(0.25, 0.50, 0.75), na.rm=TRUE) 
-quantile(RCbray2_N, c(0.25, 0.50, 0.75), na.rm=TRUE) 
-
-
-
-## classification: 
-# Variable selection      betaNTI > 2
-
-class_VS_M <- sesbetaNTI_M>=2
-sum(class_VS_M, na.rm=TRUE)/2 #23
-
-class_VS_F <- sesbetaNTI_F>=2
-sum(class_VS_F, na.rm=TRUE)/2 #3
-
-class_VS_N <- sesbetaNTI_N>=2
-sum(class_VS_N, na.rm=TRUE)/2 #3
-
-# Homogenous selection:   betaNTI < -2
-
-class_HS_M <- -2>=sesbetaNTI_M
-sum(class_HS_M, na.rm=TRUE)/2 #40
-
-class_HS_F <- -2>=sesbetaNTI_F
-sum(class_HS_F, na.rm=TRUE)/2 #98
-
-class_HS_N <- -2>=sesbetaNTI_N
-sum(class_HS_N, na.rm=TRUE)/2 #0
-
-# Dispersal limitation    betaNTI < 2, RCbray > 0.95
-
-class_DLtemp <- ((sesbetaNTI_M<2 & sesbetaNTI_M>(-2)) + (RCbray2_M>=0.95))
-class_DL_M <- (class_DLtemp==2)
-sum(class_DL_M, na.rm=TRUE)/2 #27
-
-class_DLtemp <- ((sesbetaNTI_F<2 & sesbetaNTI_F>(-2)) + (RCbray2_F>=0.95))
-class_DL_F <- (class_DLtemp==2)
-sum(class_DL_F, na.rm=TRUE)/2 #28
-
-class_DLtemp <- ((sesbetaNTI_N<2 & sesbetaNTI_N>(-2)) + (RCbray2_N>=0.95))
-class_DL_N <- (class_DLtemp==2)
-sum(class_DL_N, na.rm=TRUE)/2 #15
-
-
-# Homogenizing dispersal  betaNTI < 2, RCbray < -0.95
-
-class_HDtemp <- ((sesbetaNTI_M<2 & sesbetaNTI_M>(-2)) + (-0.95>=RCbray2_M))
-class_HD_M <- (class_HDtemp==2)
-sum(class_HD_M, na.rm=TRUE)/2 #6
-
-class_HDtemp <- ((sesbetaNTI_F<2 & sesbetaNTI_F>(-2)) + (-0.95>=RCbray2_F))
-class_HD_F <- (class_HDtemp==2)
-sum(class_HD_F, na.rm=TRUE)/2 #25
-
-class_HDtemp <- ((sesbetaNTI_N<2 & sesbetaNTI_N>(-2)) + (-0.95>=RCbray2_N))
-class_HD_N <- (class_HDtemp==2)
-sum(class_HD_N, na.rm=TRUE)/2 #1
-
-# Undominated             betaNTI < 2, RCbray < 0.95
-
-class_UDtemp <- ((sesbetaNTI_M<2 & sesbetaNTI_M>(-2)) + ((RCbray2_M<0.95)&(RCbray2_M>(-0.95))))
-class_UD_M <- (class_UDtemp==2)
-sum(class_UD_M, na.rm=TRUE)/2 #400
-
-class_UDtemp <- ((sesbetaNTI_F<2 & sesbetaNTI_F>(-2)) + ((RCbray2_F<0.95)&(RCbray2_F>(-0.95))))
-class_UD_F <- (class_UDtemp==2)
-sum(class_UD_F, na.rm=TRUE)/2 #512
-
-class_UDtemp <- ((sesbetaNTI_N<2 & sesbetaNTI_N>(-2)) + ((RCbray2_N<0.95)&(RCbray2_N>(-0.95))))
-class_UD_N <- (class_UDtemp==2)
-sum(class_UD_N, na.rm=TRUE)/2 #26
-
-stageM<- c(sum(class_VS_M, na.rm=TRUE),sum(class_HS_M, na.rm=TRUE)/2, sum(class_DL_M, na.rm=TRUE)/2, 
-          sum(class_HD_M, na.rm=TRUE)/2,sum(class_UD_M, na.rm=TRUE)/2)
-stageF<- c(sum(class_VS_F, na.rm=TRUE),sum(class_HS_F, na.rm=TRUE)/2, sum(class_DL_F, na.rm=TRUE)/2, 
-          sum(class_HD_F, na.rm=TRUE)/2,sum(class_UD_F, na.rm=TRUE)/2)
-stageN<- c(sum(class_VS_N, na.rm=TRUE),sum(class_HS_N, na.rm=TRUE)/2, sum(class_DL_N, na.rm=TRUE)/2, 
-          sum(class_HD_N, na.rm=TRUE)/2,sum(class_UD_N, na.rm=TRUE)/2)
-
-stage <- c(rep("all" , 5) , rep("male" , 5) , rep("female" , 5) , rep("nymph" , 5) )
-proc <- rep(c("Variable selection","Homogenous selection","Dispersal limitation","Homogenizing dispersal","Undominated"),4)
-value2 <- c(all,stageM,stageF,stageN)
-data2 <- data.frame(stage,proc,value2)
-
-#Figure in Supplement
-
-ggplot(data2, aes(fill=proc, y=value2, x=stage)) + 
-  geom_bar(position="fill", stat="identity")
-proc <- rep(c("Variable selection","Homogenous selection","Dispersal limitation","Homogenizing dispersal","Undominated"),4)
